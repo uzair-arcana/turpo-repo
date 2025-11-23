@@ -1,0 +1,5 @@
+export const SERVICES = {
+  AUTH: 'AUTH-SERVICE',
+  USER: 'USER-SERVICE',
+  EMAIL: 'EMAIL-SERVICE',
+};

@@ -25,8 +25,7 @@ coverage
 .next/
 out/
 build
-dist
-
+# dist/ is handled by individual app .gitignore files
 
 # Debug
 npm-debug.log*
@@ -36,3 +35,7 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Logs
+logs/
+*.log

@@ -20,5 +20,12 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@nestjs/jwt": "^11.0.1",
+    "@nestjs/microservices": "^11.1.9",
+    "@nestjs/throttler": "^6.4.0",
+    "class-validator": "^0.14.2",
+    "dotenv": "^17.2.3"
+  }
 }

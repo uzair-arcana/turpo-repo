@@ -22,10 +22,21 @@
     "packages/*"
   ],
   "dependencies": {
+    "@nestjs/cache-manager": "^3.0.1",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/jwt": "^11.0.1",
     "@nestjs/microservices": "^11.1.9",
     "@nestjs/throttler": "^6.4.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "bcrypt": "^6.0.0",
+    "cache-manager": "^7.2.5",
+    "cache-manager-ioredis": "^2.1.0",
     "class-validator": "^0.14.2",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "ioredis": "^5.8.2",
+    "otp-generator": "^4.0.1",
+    "pg": "^8.16.3",
+    "typeorm": "^0.3.27",
+    "uuid": "^13.0.0"
   }
 }

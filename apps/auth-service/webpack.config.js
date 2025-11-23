@@ -8,6 +8,13 @@ module.exports = function (options, webpack) {
 
   return {
     ...options,
+    externals: {
+      // Externalize native modules - they can't be bundled
+      'bcrypt': 'commonjs bcrypt',
+      'ioredis': 'commonjs ioredis',
+      'pg': 'commonjs pg',
+      'pg-native': 'commonjs pg-native',
+    },
     output: {
       ...options.output,
       libraryTarget: 'commonjs2',
@@ -34,7 +41,6 @@ module.exports = function (options, webpack) {
             'kafkajs',
             'mqtt',
             'nats',
-            'ioredis',
             'amqplib',
             'amqp-connection-manager',
           ];

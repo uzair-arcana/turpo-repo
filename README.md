@@ -17,119 +17,160 @@ This Turborepo includes the following packages/apps:
 ### Apps and Packages
 
 - `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+# hirehub
 
-### Utilities
+Monorepo for the HireHub microservices and shared packages. This repository uses npm workspaces and Turborepo for task orchestration.
 
-This Turborepo has some additional tools already setup for you:
+**Quick overview**
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Root scripts: `build`, `dev`, `lint`, `format`, `check-types` (run with `npm run <script>` from repo root).
+- Workspace layout (important folders):
+  - `apps/` — microservices and application servers (e.g. `api-gateway`, `auth-service`)
+  - `packages/` — shared packages and config (eslint, tsconfig, etc.)
+  - `shared/` — shared TypeScript code (dtos, entities, utils, database, redis)
 
-### Build
-
-To build all apps and packages, run the following command:
+Repository structure (relevant paths)
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+package.json
+apps/
+	api-gateway/
+	auth-service/
+packages/
+	eslint-config/
+	typescript-config/
+shared/
+	src/
+		constants/
+		database/
+		dtos/
+		entities/
+		redis/
+		util/
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+Prerequisites
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+- Node.js >= 18 (project `engines` requires Node >=18)
+- npm (this repo uses npm workspaces; `packageManager` in root is `npm@11.6.2`).
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+Getting started (install)
 
-### Develop
+From the repository root:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+npm install
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+This installs dependencies for the root and workspace packages.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+Creating a new app (step-by-step)
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+There are a few ways to scaffold a new app. Below are two common options.
 
-### Remote Caching
+1. Scaffold a new NestJS app with the Nest CLI (recommended for Nest services)
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+```bash
+# from repo root
+npx @nestjs/cli new apps/<app-name> --package-manager npm
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# the CLI will create `apps/<app-name>` and a package.json inside it
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Notes:
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- Because the root `package.json` uses the `apps/*` workspace glob, new apps inside `apps/` are automatically included in the workspace — you do not need to update the root config.
+- After the CLI finishes, run `npm install` at the root again to install workspace deps.
 
+2. Create a minimal app manually
+
+```bash
+# create directory and package.json
+mkdir -p apps/<app-name>
+cat > apps/<app-name>/package.json <<'JSON'
+{
+	"name": "<app-name>",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "nest start --watch",
+		"start": "nest start",
+		"build": "nest build"
+	}
+}
+JSON
+
+# add source files (copy a small starter from another app or scaffold manually)
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+Running a single service
+
+Option A — change directory and run the app's dev script:
+
+```bash
+cd apps/api-gateway
+npm run dev
 ```
 
-## Useful Links
+Option B — run via npm workspace from the repo root (no `cd`):
 
-Learn more about the power of Turborepo:
+```bash
+# runs the `dev` script defined in apps/api-gateway/package.json
+npm --workspace=api-gateway run dev
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+Note: the value for `--workspace=` is the `name` field in the service's `package.json` (e.g. `api-gateway` or `auth-service`).
+
+Running all services (concurrently)
+
+Preferred (Turborepo): use the root `dev` script which delegates to workspace `dev` scripts via `turbo`:
+
+```bash
+# from repo root
+npm run dev
+```
+
+This runs `turbo run dev` which will execute the `dev` script in each workspace that defines it.
+
+Alternative (without turbo): use `concurrently` and npm workspaces to run specific services:
+
+```bash
+# install concurrently if you want a quick local runner
+npx concurrently \
+	"npm --workspace=api-gateway run dev" \
+	"npm --workspace=auth-service run dev"
+```
+
+Build and run production
+
+Build everything:
+
+```bash
+npm run build
+```
+
+Build and run a single service in production:
+
+```bash
+# build first
+npm --workspace=api-gateway run build
+
+# then run the compiled output
+npm --workspace=api-gateway run start:prod
+```
+
+Tips and troubleshooting
+
+- If a newly created app doesn't appear in workspace commands, run `npm install` from the root to refresh node_modules and workspace links.
+- To run tests for a workspace package: `npm --workspace=auth-service run test`.
+- To run lint for all workspaces: `npm run lint` (uses `turbo run lint`).
+
+If you want, I can also:
+
+- Add a small generator script to scaffold apps with a consistent template.
+- Add a root `start:all` script that uses `concurrently` for environments where you prefer not to use `turbo dev`.
+
+---
+
+If you'd like adjustments (for example: Yarn/PNPM examples, or a custom app template), tell me which option you prefer and I'll add it.

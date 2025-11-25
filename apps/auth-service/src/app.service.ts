@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as otpGenerator from 'otp-generator';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
@@ -291,12 +292,13 @@ export class AppService {
     template: string;
     context: any;
   }) {
-    return this.emailClient
-      .send({ cmd: 'send_email' }, payload)
-      .toPromise()
-      .catch((err) => {
-        // In real app, log; don't throw here so auth still works even if email fails
-        // console.error(err);
-      });
+    try {
+      return await firstValueFrom(
+        this.emailClient.send({ cmd: 'send_email' }, payload),
+      );
+    } catch (err) {
+      // In real app, log; don't throw here so auth still works even if email fails
+      return err;
+    }
   }
 }

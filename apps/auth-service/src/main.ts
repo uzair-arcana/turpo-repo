@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { ENV } from '@shared';
 
@@ -15,6 +15,9 @@ async function bootstrap() {
       },
     },
   );
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
   await app.listen();
 
   Logger.log(`Auth Service is running on TCP port ${ENV.AUTH_SERVICE_PORT}`);

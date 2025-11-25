@@ -1,21 +1,20 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "../entities/user.entity";
-import { ENV } from "../util/env";
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: ENV.DB_HOST,
-      port: ENV.DB_PORT,
-      username: ENV.DB_USER,
-      password: ENV.DB_PASS,
-      database: ENV.DB_NAME,
+      url: "postgresql://neondb_owner:npg_K7QClNwxBzA1@ep-summer-math-adk2ktek-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
       entities: [User],
-      synchronize: false,
-      migrationsRun: true,
-      migrations: [__dirname + "/migrations/*{.ts,.js}"],
+      synchronize: true, // Change to true temporarily
+      migrationsRun: false, // Disable migrations for now
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
     }),
     TypeOrmModule.forFeature([User]),
   ],

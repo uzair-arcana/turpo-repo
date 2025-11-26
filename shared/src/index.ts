@@ -7,6 +7,9 @@ export * from "./dtos/auth/login-request.dto";
 export * from "./dtos/auth.dto";
 export * from "./dtos/email.dto";
 
+// Entities
+export * from "./entities/user.entity";
+
 // Utils
 export * from "./util/env";
 

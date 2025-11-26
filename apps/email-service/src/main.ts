@@ -13,7 +13,11 @@ async function bootstrap() {
     },
   });
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: false, // Allow additional properties to pass through
+  }));
 
   Logger.log(`Email Service is running on TCP port ${ENV.EMAIL_SERVICE_PORT}`);
 

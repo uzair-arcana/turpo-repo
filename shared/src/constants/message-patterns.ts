@@ -8,6 +8,9 @@ export const AUTH_PATTERNS = {
   GOOGLE_LOGIN: "auth_google",
   APPLE_LOGIN: "auth_apple",
   REFRESH_TOKEN: "auth_refresh_token",
+  VERIFY_SESSION: "auth_verify_session",
+  INVALIDATE_SESSION: "auth_invalidate_session",
+  LOGOUT: "auth_logout",
 };
 
 export const EMAIL_PATTERNS = {

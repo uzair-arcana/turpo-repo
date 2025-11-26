@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { AuthController } from '../auth/auth.controller';
-import { ENV } from '@shared';
+import { ENV, SERVICES } from '@shared';
 import { MyLoggerModule } from '../my-logger/my-logger.module';
 import { RequestLoggerMiddleware } from '../middleware/request-logger.middleware';
 
@@ -28,7 +28,7 @@ import { RequestLoggerMiddleware } from '../middleware/request-logger.middleware
     MyLoggerModule, // This stays as is
     ClientsModule.register([
       {
-        name: 'AUTH-SERVICE',
+        name: SERVICES.AUTH,
         transport: Transport.TCP,
         options: {
           host: ENV.AUTH_SERVICE_HOST,

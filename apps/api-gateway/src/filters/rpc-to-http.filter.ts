@@ -25,9 +25,22 @@ export class RpcToHttpFilter implements ExceptionFilter {
       return res.status(status).json({ statusCode: status, message });
     }
 
-    // 2) If the microservice returned a plain object (very common), e.g. { status: 401, message: '...' }
+    // 2) Handle errors from firstValueFrom - they often have error property
     if (typeof exception === 'object' && exception !== null) {
       const maybe = exception as any;
+
+      // Handle RPC errors wrapped by firstValueFrom
+      if (maybe.error) {
+        const rpcError = maybe.error;
+        const status = (rpcError.status || rpcError.statusCode) || HttpStatus.INTERNAL_SERVER_ERROR;
+        const message = rpcError.message || 'Internal server error';
+        return res.status(status).json({
+          statusCode: status,
+          message,
+        });
+      }
+
+      // If the microservice returned a plain object (very common), e.g. { status: 401, message: '...' }
       if (maybe.status && maybe.message) {
         return res.status(maybe.status).json({
           statusCode: maybe.status,

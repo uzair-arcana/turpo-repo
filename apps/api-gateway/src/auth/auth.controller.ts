@@ -6,6 +6,7 @@ import {
   Version,
   Get,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
@@ -25,14 +26,14 @@ import { firstValueFrom } from 'rxjs';
 @Controller('auth')
 export class AuthController {
   constructor(
-    @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy
+    @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy,
   ) {}
 
   @Post('signup')
   @Version('1')
   async signup(@Body() signupDto: SignupDto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.SIGNUP }, signupDto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.SIGNUP }, signupDto),
     );
   }
 
@@ -40,7 +41,7 @@ export class AuthController {
   @Version('1')
   async login(@Body() loginDto: LoginDto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.LOGIN }, loginDto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.LOGIN }, loginDto),
     );
   }
 
@@ -48,7 +49,7 @@ export class AuthController {
   @Version('1')
   async verifyEmail(@Query() verifyEmailDto: VerifyEmailDto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.VERIFY_EMAIL }, verifyEmailDto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.VERIFY_EMAIL }, verifyEmailDto),
     );
   }
 
@@ -58,8 +59,8 @@ export class AuthController {
     return await firstValueFrom<unknown>(
       this.authClient.send(
         { cmd: AUTH_PATTERNS.FORGOT_PASSWORD_REQUEST },
-        forgotPasswordDto
-      )
+        forgotPasswordDto,
+      ),
     );
   }
 
@@ -69,8 +70,8 @@ export class AuthController {
     return await firstValueFrom<unknown>(
       this.authClient.send(
         { cmd: AUTH_PATTERNS.RESET_PASSWORD },
-        resetPasswordDto
-      )
+        resetPasswordDto,
+      ),
     );
   }
 
@@ -78,7 +79,7 @@ export class AuthController {
   @Version('1')
   async verify2FA(@Body() verify2FADto: Verify2FADto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.VERIFY_2FA }, verify2FADto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.VERIFY_2FA }, verify2FADto),
     );
   }
 
@@ -86,7 +87,7 @@ export class AuthController {
   @Version('1')
   async googleLogin(@Body() socialLoginDto: SocialLoginDto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.GOOGLE_LOGIN }, socialLoginDto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.GOOGLE_LOGIN }, socialLoginDto),
     );
   }
 
@@ -94,7 +95,7 @@ export class AuthController {
   @Version('1')
   async appleLogin(@Body() socialLoginDto: SocialLoginDto) {
     return await firstValueFrom<unknown>(
-      this.authClient.send({ cmd: AUTH_PATTERNS.APPLE_LOGIN }, socialLoginDto)
+      this.authClient.send({ cmd: AUTH_PATTERNS.APPLE_LOGIN }, socialLoginDto),
     );
   }
 
@@ -104,8 +105,20 @@ export class AuthController {
     return await firstValueFrom<unknown>(
       this.authClient.send(
         { cmd: AUTH_PATTERNS.REFRESH_TOKEN },
-        refreshTokenDto
-      )
+        refreshTokenDto,
+      ),
+    );
+  }
+
+  @Post('logout')
+  @Version('1')
+  async logout(@Headers('authorization') authorization: string) {
+    const accessToken = authorization?.replace('Bearer ', '');
+    if (!accessToken) {
+      throw new Error('Access token required');
+    }
+    return await firstValueFrom<unknown>(
+      this.authClient.send({ cmd: AUTH_PATTERNS.LOGOUT }, { accessToken }),
     );
   }
 }

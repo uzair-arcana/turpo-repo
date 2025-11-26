@@ -62,4 +62,9 @@ export class AppController {
   refreshToken(@Payload() dto: RefreshTokenDto) {
     return this.appService.refreshToken(dto.refreshToken);
   }
+
+  @MessagePattern({ cmd: AUTH_PATTERNS.LOGOUT })
+  logout(@Payload() payload: { accessToken: string }) {
+    return this.appService.logout(payload.accessToken);
+  }
 }

@@ -25,6 +25,10 @@ coverage
 .next/
 out/
 build
+apps/*/dist/
+packages/*/dist/
+shared/dist/
+**/dist/
 # dist/ is handled by individual app .gitignore files
 
 # Debug

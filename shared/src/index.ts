@@ -19,4 +19,5 @@ export * from "./redis/redis.module";
 // Database
 export * from "./database/database.module";
 
-//
+// Interfaces
+export * from "./interfaces/auth-service.interfaces";
